@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import * as SendBird from 'sendbird';
-
+import MessageListItem from './MessListItem';
 
 const SB_APP_ID = 'D0040096-E173-4232-A941-40ACA136FDF7';
 const SB_CHANNEL = 'sendbird_open_channel_47637_cfac949ab329445335b69011724fac6549a9919d';
@@ -159,9 +159,6 @@ class App extends Component {
           <input type='text' value={this.state.txtName} onChange={this.onHandleName}></input>
           <button onClick={this.onJoinAction}>join</button>
           <div>
-
-
-
             <label>
               Channel:
         </label>
@@ -185,13 +182,17 @@ class App extends Component {
           <img src={this.state.avatar} alt='avatar' ></img>
         </p>
         <div>
-          <ol>
-            {this.state.messageList.map((item, index) => {
-              return <li key={index}>
-                {item.message}
-              </li>
-            })}
-          </ol>
+
+          {this.state.messageList.map((item, index) => {
+            return <MessageListItem
+              key={index}
+              message={item.message}
+              timeReceived={new Date(item.createdAt).toLocaleString('en-Us')}
+              imgSource={item._sender.profileUrl}
+              darker={item._sender.userId === this.state.txtChatID}
+            />
+          })}
+
         </div>
       </div>
     );
