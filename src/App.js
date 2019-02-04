@@ -61,7 +61,7 @@ class App extends Component {
         if (error) {
           return;
         }
-        alert('connected to defined channel');
+        // alert('connected to defined channel');
         console.log('channeld are in', response);
 
 
@@ -99,6 +99,7 @@ class App extends Component {
         return;
       };
       // alert('sent');
+      this.setState({ txtMessage: '' });
       console.log(message);
       var messList = this.state.openC.createPreviousMessageListQuery();
       messList.limit = 30;
@@ -111,6 +112,7 @@ class App extends Component {
         console.log(messL);
         this.setState({ messageList: messL });
         console.log(this.state.messageList);
+
       });
 
     });
@@ -122,7 +124,7 @@ class App extends Component {
       if (error) {
         alert('error now');
       }
-      alert('connect is done');
+      // alert('connect is done');
       console.log('our user is', user);
       this.setState({ avatar: user.profileUrl });
       var ChannelHandler = new this.state.sb.ChannelHandler();
@@ -140,7 +142,7 @@ class App extends Component {
       this.state.sb.addChannelHandler('channel1', ChannelHandler);
 
     });
-    alert('all are good at end');
+    // alert('all are good at end');
   }
 
   render() {
@@ -171,12 +173,16 @@ class App extends Component {
             <label>
               Message:
         </label>
-            <input type='text' value={this.state.txtMessage} onChange={this.onHandleChangeMessage}></input>
+            <input type='text' value={this.state.txtMessage} onChange={this.onHandleChangeMessage} onKeyUp={(event) => {
+              if (event.keyCode === 13) {
+                this.onSendMessage();
+              }
+            }}></input>
             <button onClick={this.onSendMessage}>send message</button>
           </div>
         </div>
         <p>
-          <img src={this.state.avatar} alt='avatar'></img>
+          <img src={this.state.avatar} alt='avatar' ></img>
         </p>
         <div>
           <ol>
