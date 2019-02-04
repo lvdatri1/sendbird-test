@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import './App.css';
 import * as SendBird from 'sendbird';
 
@@ -126,6 +125,19 @@ class App extends Component {
       alert('connect is done');
       console.log('our user is', user);
       this.setState({ avatar: user.profileUrl });
+      var ChannelHandler = new this.state.sb.ChannelHandler();
+
+      ChannelHandler.onMessageReceived = (channel, message) => {
+        console.log(channel, message);
+
+        var newMess = [message].concat(this.state.messageList);
+
+        // this.state.messageList.push(message);
+        console.log(this.state.messageList);
+        this.setState({ ...this.state, messageList: newMess });
+      };
+
+      this.state.sb.addChannelHandler('channel1', ChannelHandler);
 
     });
     alert('all are good at end');
