@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 
 export default class MessListItem extends Component {
-    constructor(props) {
-        super(props);
-    }
+
     render() {
         const { darker, message, timeReceived, imgSource } = this.props;
         var styleX = 'container';
