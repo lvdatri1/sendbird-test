@@ -18,8 +18,9 @@ class App extends Component {
       avatar: 'https://via.placeholder.com/150',
       txtMessage: '',
       openC: null,
-      sb: new SendBird({ appId: SB_APP_ID }),
+      sb: null,
       messageList: [],
+      isLoading: false,
     });
     this.onJoinAction = this.onJoinAction.bind(this);
     this.onJoinChannelAction = this.onJoinChannelAction.bind(this);
@@ -51,6 +52,7 @@ class App extends Component {
   }
   onJoinChannelAction() {
     // alert('joined channel');
+    this.setState({ isLoading: true });
 
     this.state.sb.OpenChannel.getChannel(SB_CHANNEL, (openChannel, error) => {
       if (error) {
@@ -63,8 +65,6 @@ class App extends Component {
         }
         // alert('connected to defined channel');
         console.log('channeld are in', response);
-
-
       });
       var messList = openChannel.createPreviousMessageListQuery();
       messList.limit = 30;
@@ -75,7 +75,8 @@ class App extends Component {
           return;
         }
         console.log(messL);
-        this.setState({ messageList: messL });
+        this.setState({ messageList: messL, isLoading: false });
+
         console.log(this.state.messageList);
       });
 
@@ -91,6 +92,9 @@ class App extends Component {
 
   }
   componentDidMount() {
+    var temp = new SendBird({ appId: SB_APP_ID });
+    this.setState({ sb: temp });
+
   }
   onSendMessage() {
     this.state.openC.sendUserMessage(this.state.txtMessage, 'DATA', 'CUSTOM_TYPE', (message, error) => {
@@ -120,6 +124,7 @@ class App extends Component {
   }
   onJoinAction() {
     // var sb = new SendBird({ appId: SB_APP_ID });
+    this.setState({ isLoading: true });
     this.state.sb.connect(this.state.txtChatID, (user, error) => {
       if (error) {
         alert('error now');
@@ -140,6 +145,8 @@ class App extends Component {
       };
 
       this.state.sb.addChannelHandler('channel1', ChannelHandler);
+      this.setState({ isLoading: false });
+      this.onJoinChannelAction();
 
     });
     // alert('all are good at end');
@@ -164,7 +171,6 @@ class App extends Component {
         </label>
             <input type='text' value={this.state.txtChannel} onChange={this.onHandleChangeChannel}></input>
             <button onClick={this.onJoinChannelAction}>join channel</button>
-
           </div>
           <div>
             <label>
@@ -182,7 +188,6 @@ class App extends Component {
           <img src={this.state.avatar} alt='avatar' ></img>
         </p>
         <div>
-
           {this.state.messageList.map((item, index) => {
             return <MessageListItem
               key={index}
@@ -192,8 +197,8 @@ class App extends Component {
               darker={item._sender.userId === this.state.txtChatID}
             />
           })}
-
         </div>
+        {this.state.isLoading ? <div className="loading">Loading&#8230;</div> : null}
       </div>
     );
   }
